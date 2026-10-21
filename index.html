@@ -58,6 +58,15 @@ li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:6px;disp
 .bump b{display:block;font-size:15px}.bump b span{color:var(--primary)}
 .bump p{margin:4px 0 0;font-size:13px;color:#d8d1c6;line-height:1.45}
 @media (prefers-reduced-motion:reduce){.cta,.on .dot{animation:none}}
+.tl{font:600 11px/1 ui-monospace,Menlo,Consolas,monospace;color:var(--warn,#f3c64f);text-align:center;letter-spacing:.04em}
+.unlock{border:2px solid var(--primary);border-radius:16px;padding:18px;text-align:center;display:grid;gap:12px;background:linear-gradient(180deg,rgba(240,138,60,.16),rgba(240,138,60,.04));animation:glow 1.1s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 3px rgba(240,138,60,.35),0 0 60px -6px var(--primary)}}
+.unlock h3{margin:0;font-size:22px;line-height:1.15;text-transform:uppercase;letter-spacing:-.01em}
+.unlock h3 em{font-style:normal;color:var(--primary)}
+.unlock p{margin:0;font-size:14px;color:#d8d1c6}
+.cta.hot{animation:hot .7s ease-in-out infinite;font-size:20px;min-height:68px}
+@keyframes hot{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(240,138,60,.7)}50%{transform:scale(1.06);box-shadow:0 0 0 12px rgba(240,138,60,0),0 0 50px 0 var(--primary);filter:brightness(1.18)}}
+@media (prefers-reduced-motion:reduce){.unlock,.cta.hot{animation:none}}
 [hidden]{display:none!important}
 body{margin:0}
 </style>
@@ -82,12 +91,19 @@ body{margin:0}
   </ul>
 
   <div class="sim" id="sim">
-    <div class="sh"><span><span class="dot"></span><span id="st">ROBÔ DESLIGADO</span></span><span>META R$ 300 · LIMITE R$ 150</span></div>
+    <div class="sh"><span><span class="dot"></span><span id="st">ROBÔ DESLIGADO</span></span><span>META R$ 500 · LIMITE R$ 250</span></div>
     <div class="stats"><div>Resultado<b id="net">R$ 0,00</b></div><div>Wins<b id="wn" class="w">0</b></div><div>Losses<b id="ls" class="l">0</b></div></div>
     <ul class="feed" id="feed"></ul>
     <div class="win" id="done" hidden>🏆 Meta alcançada, o robô parou sozinho<b id="fin"></b></div>
     <button class="go" id="go" type="button">▶ Ligar o robô</button>
-    <p class="fine">Simulação ilustrativa com entradas de R$ 50. Não representa resultados reais.</p>
+    <p class="tl" id="tl"></p>
+    <p class="fine">Simulação ilustrativa com valores aleatórios. Não representa resultados reais.</p>
+  </div>
+
+  <div class="unlock" id="unlock" hidden>
+    <h3>Você viu o robô bater a meta. <em>Agora é a sua vez.</em></h3>
+    <p>Ative o ChinaPro completo por apenas <b>R$ 19,90</b>, pagamento único.</p>
+    <a class="cta hot js-buy" href="https://pay.cakto.com.br/kahnuwc_1145428" target="_blank" rel="noopener">🔥 Quero aproveitar agora<small>Oportunidade imperdível · acesso imediato</small></a>
   </div>
 
   <div class="box" id="oferta">
@@ -106,32 +122,49 @@ body{margin:0}
 var CHECKOUT = "https://pay.cakto.com.br/kahnuwc_1145428";
 if (CHECKOUT) { var c = document.getElementById("cta"); c.href = CHECKOUT; c.target = "_blank"; c.rel = "noopener"; }
 
-// Simulação ilustrativa: sequência fixa com perdas, para no stop-win
+// Simulação ilustrativa: valores aleatórios, 1 ou 2 losses, para no stop-win. Máx. 2 testes.
 (function () {
-  var A = ["EUR/USD", "GBP/JPY", "AUD/CAD", "USD/CHF", "EUR/JPY"], SEQ = [1, 1, 1, 0, 1, 1, 1, 1, 1], PAY = 45, STAKE = 50, META = 300;
+  var A = ["EUR/USD", "GBP/JPY", "AUD/CAD", "USD/CHF", "EUR/JPY", "GBP/USD"], META = 500, MAXT = 2;
   var $ = function (i) { return document.getElementById(i); };
   var brl = function (v) { return (v < 0 ? "-" : v > 0 ? "+" : "") + "R$ " + Math.abs(v).toFixed(2).replace(".", ","); };
+  var rnd = function (a, b) { return a + Math.random() * (b - a); };
+  var used = 0; try { used = +localStorage.getItem("cp_testes") || 0; } catch (e) {}
+  function left() { return Math.max(0, MAXT - used); }
+  function showOffer() {
+    $("go").disabled = true; $("go").textContent = "Testes gratuitos esgotados";
+    $("unlock").hidden = false;
+    $("unlock").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  function label() { $("tl").textContent = left() + (left() === 1 ? " teste gratuito restante" : " testes gratuitos restantes"); }
+  label();
+  if (!left()) { $("go").disabled = true; $("go").textContent = "Testes gratuitos esgotados"; $("unlock").hidden = false; }
   $("go").onclick = function () {
-    var b = this, i = 0, net = 0, w = 0, l = 0;
+    if (!left()) return showOffer();
+    used++; try { localStorage.setItem("cp_testes", used); } catch (e) {}
+    label();
+    var b = this, i = 0, net = 0, w = 0, l = 0, losses = 1 + (Math.random() < .35 ? 1 : 0), lossAt = [];
+    while (lossAt.length < losses) { var p = 1 + Math.floor(Math.random() * 5); if (lossAt.indexOf(p) < 0) lossAt.push(p); }
     b.disabled = true; b.textContent = "Operando…"; $("feed").innerHTML = ""; $("done").hidden = true;
     $("sim").classList.add("on"); $("st").textContent = "ROBÔ OPERANDO";
-    $("net").textContent = brl(0); $("wn").textContent = 0; $("ls").textContent = 0;
+    $("net").textContent = brl(0); $("net").className = ""; $("wn").textContent = 0; $("ls").textContent = 0;
     (function step() {
-      var win = SEQ[i] === 1, r = win ? PAY : -STAKE;
-      net += r; win ? w++ : l++;
+      var stake = Math.round(rnd(60, 160)), win = lossAt.indexOf(i) < 0, r = win ? Math.round(stake * rnd(.85, .92) * 100) / 100 : -stake;
+      net = Math.round((net + r) * 100) / 100; win ? w++ : l++;
       var li = document.createElement("li");
-      li.innerHTML = "<span>" + A[i % 5] + (i % 3 ? " ↑" : " ↓") + "</span><span class=\"" + (win ? "w" : "l") + "\">" + (win ? "WIN " : "LOSS ") + brl(r) + "</span>";
+      li.innerHTML = "<span>" + A[Math.floor(Math.random() * A.length)] + (Math.random() < .5 ? " ↑" : " ↓") + " <span style=\"opacity:.55\">R$ " + stake + "</span></span><span class=\"" + (win ? "w" : "l") + "\">" + (win ? "WIN " : "LOSS ") + brl(r) + "</span>";
       $("feed").prepend(li); while ($("feed").children.length > 5) $("feed").lastChild.remove();
-      $("net").textContent = brl(net); $("net").className = (net > 0 ? "w" : net < 0 ? "l" : "") + " pop"; void $("net").offsetWidth;
+      $("net").className = ""; void $("net").offsetWidth;
+      $("net").textContent = brl(net); $("net").className = (net > 0 ? "w" : net < 0 ? "l" : "") + " pop";
       if (win) { $("sim").classList.remove("flash"); void $("sim").offsetWidth; $("sim").classList.add("flash"); }
       $("wn").textContent = w; $("ls").textContent = l; i++;
-      if (net >= META || i >= SEQ.length) {
+      if (net >= META || i > 30) {
         $("sim").classList.remove("on"); $("st").textContent = "META ATINGIDA";
         $("fin").textContent = brl(net); $("done").hidden = false;
-        b.disabled = false; b.textContent = "↻ Simular de novo";
+        if (left()) { b.disabled = false; b.textContent = "↻ Usar meu último teste"; }
+        else setTimeout(showOffer, 1400);
         return;
       }
-      setTimeout(step, 420);
+      setTimeout(step, 380);
     })();
   };
 })();
