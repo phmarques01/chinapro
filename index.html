@@ -205,7 +205,7 @@ body.jack .dock{display:none}
 #gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.2s}
 body.g3 #gl{opacity:1}
 body.g3 .core>*{opacity:0;transition:opacity .6s}
-.core{width:170px;height:170px;margin:0 auto 4px}
+.core{width:170px;height:170px;margin:22px auto 10px}
 #flash{position:fixed;inset:0;z-index:90;pointer-events:none;background:radial-gradient(circle,#fff,rgba(127,232,255,.6) 40%,transparent 75%);opacity:0}
 #flash.on{animation:fls .7s ease-out}
 @keyframes fls{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
@@ -467,7 +467,7 @@ body.g3 .core>*{opacity:0;transition:opacity .6s}
       U.t.value = t; U.e.value = E + Cg * .8; pulse *= .93; U.pa.value = pulse;
       // posição: segue o espaço reservado no topo; mergulha para o centro
       var visH = 2 * Math.tan(C.fov * Math.PI / 360) * C.position.z, k = visH / innerHeight, r = ph.getBoundingClientRect();
-      var tx = (r.left + r.width / 2 - innerWidth / 2) * k, ty = -(r.top + r.height / 2 - innerHeight / 2) * k, base = (r.width * .55) * k / 1.8;
+      var tx = (r.left + r.width / 2 - innerWidth / 2) * k, ty = -(r.top + r.height / 2 - innerHeight / 2) * k, base = (r.width * .42) * k / 1.8;
       core.position.x = tx * (1 - D); core.position.y = ty * (1 - D);
       var s = base * (1 + Cg * .25) * (1 - D) + D * 7.5; core.scale.setScalar(s);
       rx += (my * .5 - rx) * .05; ry += (mx * .8 - ry) * .05;
