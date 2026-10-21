@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="ChinaPro: robô de automação multi-contas com stop-win e stop-loss.">
+<meta name="theme-color" content="#141210">
+<title>ChinaPro Oferta</title>
+<style>
+/* Layout: uma coluna curta, sem fontes externas, sem imagens, sem scripts pesados */
+:root{--bg:#141210;--card:#1c1a17;--line:rgba(255,255,255,.09);--fg:#f4f1ec;--muted:#a39b90;--primary:#f08a3c;--primary2:#e85a3f;--cyan:#7fe8ff;--success:#4ee39a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg) radial-gradient(80% 45% at 50% 0%,rgba(240,138,60,.18),transparent 70%) no-repeat;color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:460px;margin:0 auto;padding-block:28px 32px;display:grid;gap:22px}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.01em;text-align:center}
+.logo span{background:linear-gradient(90deg,var(--primary),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{font:600 11px/1 ui-monospace,Menlo,Consolas,monospace;color:var(--cyan);letter-spacing:.08em;text-align:center}
+h1{font-size:clamp(28px,7.5vw,36px);line-height:1.1;margin:0;text-align:center;letter-spacing:-.02em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--primary)}
+.lead{margin:0;text-align:center;color:#d8d1c6}
+ul{list-style:none;margin:0;padding:18px;display:grid;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+li{display:flex;gap:10px;font-weight:600;font-size:15px}
+li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;background:rgba(78,227,154,.14);color:var(--success)}
+.box{border:1px solid rgba(240,138,60,.5);border-radius:18px;padding:22px 18px;background:var(--card);box-shadow:0 20px 70px -35px var(--primary);text-align:center;display:grid;gap:14px}
+.price{font-size:54px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.price small{font-size:20px;vertical-align:top;margin-right:4px}
+.sub{color:var(--muted);font-size:13px;margin-top:-6px}
+.cta{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:62px;border-radius:12px;background:linear-gradient(110deg,var(--primary),var(--primary2));color:#1a0f0b;font-weight:800;font-size:18px;text-decoration:none;text-transform:uppercase;box-shadow:0 12px 40px -14px var(--primary);animation:p 2s ease-in-out infinite}
+.cta small{font-size:11px;font-weight:600;text-transform:none;opacity:.75}
+.cta:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+@keyframes p{50%{transform:scale(1.025)}}
+.trust{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
+.g{color:var(--success);font-weight:700}
+.note{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin:0}
+.sim{background:var(--card);border:1px solid rgba(127,232,255,.28);border-radius:14px;padding:16px;display:grid;gap:12px}
+.sh{display:flex;justify-content:space-between;align-items:center;font:600 11px/1 ui-monospace,Menlo,Consolas,monospace;color:var(--cyan);letter-spacing:.06em}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;background:var(--muted);margin-right:6px}
+.on .dot{background:var(--success);animation:bl 1s infinite}@keyframes bl{50%{opacity:.3}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stats div{background:#221f1b;border-radius:10px;padding:8px 4px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.stats b{display:block;font:700 16px/1.3 ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-transform:none;letter-spacing:0}
+.feed{list-style:none;margin:0;padding:0;background:none;border:0;display:grid;gap:0;min-height:0}
+.feed li{display:flex;justify-content:space-between;font:600 12px/1 ui-monospace,Menlo,Consolas,monospace;padding:9px 2px;border-top:1px solid var(--line);animation:in .3s ease both}
+.feed li::before{display:none}
+.feed li:first-child{border-top:0}
+@keyframes in{from{opacity:0;transform:translateY(-5px)}}
+.w{color:var(--success)}.l{color:#ff6b5e}
+.go{min-height:52px;border:0;border-radius:10px;font:800 16px/1 system-ui,sans-serif;cursor:pointer;background:var(--cyan);color:#0d1a1e;text-transform:uppercase}
+.go:disabled{opacity:.5;cursor:default}.go:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.win{text-align:center;border:1px solid rgba(78,227,154,.4);border-radius:10px;padding:12px;font-weight:800;box-shadow:0 8px 30px -14px var(--success)}
+.win b{display:block;font:700 24px/1.3 ui-monospace,Menlo,Consolas,monospace;color:var(--success)}
+.fine{font-size:10px;color:var(--muted);text-align:center;margin:0}
+.bump{border:2px dashed var(--primary);border-radius:12px;padding:14px;text-align:left;display:flex;gap:12px;background:rgba(240,138,60,.07)}
+.bump .ck{flex:none;width:24px;height:24px;border-radius:6px;background:var(--primary);color:#1a0f0b;display:grid;place-items:center;font-weight:900;font-size:14px}
+.bump b{display:block;font-size:15px}.bump b span{color:var(--primary)}
+.bump p{margin:4px 0 0;font-size:13px;color:#d8d1c6;line-height:1.45}
+@media (prefers-reduced-motion:reduce){.cta,.on .dot{animation:none}}
+[hidden]{display:none!important}
+body{margin:0}
+</style>
+</head>
+<body>
+
+<main>
+  <div>
+    <div class="logo">China<span>Pro</span></div>
+    <div class="tag">ROBÔ DE AUTOMAÇÃO · MULTI-CONTAS</div>
+  </div>
+
+  <h1>O robô opera por você. <em>Os limites são seus.</em></h1>
+  <p class="lead">Ele analisa, escolhe a estratégia e entra sozinho. Bateu sua meta ou seu limite de perda, ele para.</p>
+
+  <ul>
+    <li>Opera sozinho, até com o computador desligado</li>
+    <li>Quantas contas você quiser ao mesmo tempo</li>
+    <li>Mercado aberto e OTC no automático</li>
+    <li>Stop-win, stop-loss e parada de emergência</li>
+    <li>Teste grátis na conta demo antes da real</li>
+  </ul>
+
+  <div class="sim" id="sim">
+    <div class="sh"><span><span class="dot"></span><span id="st">ROBÔ DESLIGADO</span></span><span>META R$ 40 · LIMITE R$ 30</span></div>
+    <div class="stats"><div>Resultado<b id="net">R$ 0,00</b></div><div>Wins<b id="wn" class="w">0</b></div><div>Losses<b id="ls" class="l">0</b></div></div>
+    <ul class="feed" id="feed"></ul>
+    <div class="win" id="done" hidden>🏆 Meta alcançada, o robô parou sozinho<b id="fin"></b></div>
+    <button class="go" id="go" type="button">▶ Ligar o robô</button>
+    <p class="fine">Simulação ilustrativa com entradas de R$ 10. Não representa resultados reais.</p>
+  </div>
+
+  <div class="box" id="oferta">
+    <div class="price"><small>R$</small>19,90</div>
+    <div class="sub">pagamento único · acesso imediato</div>
+    <a class="cta" id="cta" href="#oferta">Quero o ChinaPro<small>Pix ou cartão</small></a>
+    <div class="bump"><span class="ck">✓</span><div><b>Na hora da compra, adicione o <span>Robô BTCUSD</span></b><p>Opera Bitcoin a noite toda enquanto você dorme, com os mesmos limites de risco. Marque a opção na página de pagamento.</p></div></div>
+    <div class="trust"><span>🔒 Compra segura</span><span class="g">✓ Garantia de 7 dias</span></div>
+  </div>
+
+  <p class="note">Opções binárias envolvem alto risco e podem causar perda do capital. O ChinaPro é uma ferramenta de automação e não garante lucro.</p>
+</main>
+
+<script>
+// Link do checkout
+var CHECKOUT = "https://pay.cakto.com.br/kahnuwc_1145428";
+if (CHECKOUT) { var c = document.getElementById("cta"); c.href = CHECKOUT; c.target = "_blank"; c.rel = "noopener"; }
+
+// Simulação ilustrativa: sequência fixa com perdas, para no stop-win
+(function () {
+  var A = ["EUR/USD", "GBP/JPY", "AUD/CAD", "USD/CHF"], SEQ = [1, 1, 0, 1, 1, 1, 1], PAY = 9, STAKE = 10, META = 40;
+  var $ = function (i) { return document.getElementById(i); };
+  var brl = function (v) { return (v < 0 ? "-" : v > 0 ? "+" : "") + "R$ " + Math.abs(v).toFixed(2).replace(".", ","); };
+  $("go").onclick = function () {
+    var b = this, i = 0, net = 0, w = 0, l = 0;
+    b.disabled = true; b.textContent = "Operando…"; $("feed").innerHTML = ""; $("done").hidden = true;
+    $("sim").classList.add("on"); $("st").textContent = "ROBÔ OPERANDO";
+    $("net").textContent = brl(0); $("wn").textContent = 0; $("ls").textContent = 0;
+    (function step() {
+      var win = SEQ[i] === 1, r = win ? PAY : -STAKE;
+      net += r; win ? w++ : l++;
+      var li = document.createElement("li");
+      li.innerHTML = "<span>" + A[i % 4] + (i % 3 ? " ↑" : " ↓") + "</span><span class=\"" + (win ? "w" : "l") + "\">" + (win ? "WIN " : "LOSS ") + brl(r) + "</span>";
+      $("feed").prepend(li); while ($("feed").children.length > 4) $("feed").lastChild.remove();
+      $("net").textContent = brl(net); $("net").className = net > 0 ? "w" : net < 0 ? "l" : "";
+      $("wn").textContent = w; $("ls").textContent = l; i++;
+      if (net >= META || i >= SEQ.length) {
+        $("sim").classList.remove("on"); $("st").textContent = "META ATINGIDA";
+        $("fin").textContent = brl(net); $("done").hidden = false;
+        b.disabled = false; b.textContent = "↻ Simular de novo";
+        return;
+      }
+      setTimeout(step, 750);
+    })();
+  };
+})();
+</script>
+</body>
+</html>
