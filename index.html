@@ -6,9 +6,11 @@
 <meta name="description" content="ChinaPro: robô de automação multi-contas com stop-win e stop-loss.">
 <meta name="theme-color" content="#08080a">
 <title>ChinaPro Oferta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
 <style>
 /* Layout: coluna única sobre um campo de partículas vivo; a simulação vira o centro do palco quando liga */
-:root{--bg:#08080a;--card:rgba(24,22,20,.82);--card2:#221f1b;--line:rgba(255,255,255,.09);--fg:#f4f1ec;--muted:#a39b90;--primary:#f08a3c;--primary2:#e85a3f;--cyan:#7fe8ff;--success:#4ee39a;--danger:#ff6b5e;--warn:#f3c64f;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;color-scheme:dark}
+:root{--bg:#08080a;--card:rgba(24,22,20,.82);--card2:#221f1b;--line:rgba(255,255,255,.09);--fg:#f4f1ec;--muted:#a39b90;--primary:#f08a3c;--primary2:#e85a3f;--cyan:#7fe8ff;--success:#4ee39a;--danger:#ff6b5e;--warn:#f3c64f;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--fut:"Orbitron",ui-monospace,Menlo,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
 html{background:var(--bg)}
 body{margin:0;background:transparent;color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
@@ -131,24 +133,85 @@ h1.gl{animation:gl .38s steps(2) 1}
 .trust{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
 .g{color:var(--success);font-weight:700}
 .note{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin:0}
+
+/* ===== camada futurista ===== */
+.logo{font-family:var(--fut);font-weight:900;font-size:22px;letter-spacing:.06em}
+.core{position:relative;width:96px;height:96px;margin:0 auto 10px;display:grid;place-items:center}
+.core i{position:absolute;inset:0;border-radius:50%}
+.core .r1{background:conic-gradient(from 0deg,transparent 0 55%,var(--cyan) 70%,transparent 72% 100%);-webkit-mask:radial-gradient(circle,transparent 60%,#000 61% 64%,transparent 65%);mask:radial-gradient(circle,transparent 60%,#000 61% 64%,transparent 65%);animation:spin 2.4s linear infinite}
+.core .r2{inset:10px;background:conic-gradient(from 180deg,transparent 0 40%,var(--primary) 60%,transparent 62%);-webkit-mask:radial-gradient(circle,transparent 62%,#000 63% 67%,transparent 68%);mask:radial-gradient(circle,transparent 62%,#000 63% 67%,transparent 68%);animation:spin 3.6s linear infinite reverse}
+.core .r3{inset:4px;border:1px dashed rgba(127,232,255,.35);animation:spin 18s linear infinite}
+.core b{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,var(--primary) 35%,rgba(240,138,60,.2) 70%);box-shadow:0 0 30px 6px rgba(240,138,60,.55),0 0 60px 10px rgba(127,232,255,.2);animation:beat 1.6s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes beat{50%{transform:scale(1.18);box-shadow:0 0 44px 10px rgba(240,138,60,.7),0 0 80px 16px rgba(127,232,255,.3)}}
+.ticker{overflow:hidden;border-block:1px solid rgba(127,232,255,.18);background:rgba(8,8,10,.55);-webkit-mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.ticker div{display:flex;gap:28px;width:max-content;padding:7px 0;font:600 11px/1 var(--mono);letter-spacing:.06em;color:var(--muted);animation:tk 22s linear infinite}
+.ticker span b{font-weight:700}
+@keyframes tk{to{transform:translateX(-50%)}}
+.price,.stats b,.unlock h3,#meta div,.combo,#boot .grant,.win b{font-family:var(--fut)}
+.price{letter-spacing:0;background:linear-gradient(100deg,#fff 20%,var(--primary) 40%,#fff 55%,var(--cyan) 75%,#fff);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:holo 3.5s linear infinite}
+.price small{-webkit-text-fill-color:currentColor;color:var(--fg)}
+@keyframes holo{to{background-position:220% 0}}
+.stats b{font-size:14px}
+#edge{position:fixed;inset:0;z-index:40;pointer-events:none;box-shadow:inset 0 0 0 0 transparent}
+#edge.g{animation:eg .55s ease}#edge.r{animation:er .55s ease}
+@keyframes eg{30%{box-shadow:inset 0 0 60px 6px rgba(78,227,154,.55)}}
+@keyframes er{30%{box-shadow:inset 0 0 60px 6px rgba(255,107,94,.5)}}
+#glow{position:fixed;z-index:0;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(127,232,255,.10),transparent 65%);transition:transform .12s linear;left:0;top:0}
+.rv.in{animation:wipe .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0);filter:brightness(2.2)}60%{filter:brightness(1.4)}to{clip-path:inset(0 0 0 0);filter:none}}
+.feats li{opacity:1}
+.feats.in li{animation:li .5s ease both}
+.feats.in li:nth-child(2){animation-delay:.08s}.feats.in li:nth-child(3){animation-delay:.16s}.feats.in li:nth-child(4){animation-delay:.24s}.feats.in li:nth-child(5){animation-delay:.32s}
+@keyframes li{from{opacity:0;transform:translateX(-14px)}}
+.go{font-family:var(--fut);font-weight:800;letter-spacing:.08em}
+.cta.hot{font-family:var(--fut);letter-spacing:.04em}
+.hh{font-family:var(--fut);font-size:10px;letter-spacing:.12em}
+@media (hover:none){#glow{display:none}}
+/* ===== cabine: dentro do robô ===== */
+.visor,.think,.link{display:none}
+.hud.cockpit{position:fixed;inset:0;z-index:60;border-radius:0;border:0;transform:none!important;overflow:auto;align-content:start;gap:10px;background:radial-gradient(120% 80% at 50% 40%,rgba(10,22,28,.96),rgba(3,4,6,.98));padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));animation:jack .7s cubic-bezier(.2,.9,.2,1) both}
+@keyframes jack{0%{clip-path:inset(49.5% 0 49.5% 0);filter:brightness(3)}45%{clip-path:inset(0 0 0 0);filter:brightness(1.6) blur(2px)}100%{clip-path:inset(0);filter:none}}
+.hud.cockpit>*:not(.visor):not(.corner){width:100%;max-width:560px;margin-inline:auto}
+.cockpit .cfg,.cockpit .tl{display:none}
+.cockpit .screen{height:min(36vh,300px);border-color:rgba(127,232,255,.4);box-shadow:0 0 40px -10px rgba(127,232,255,.5)}
+.cockpit .corner{position:fixed;width:34px;height:34px;opacity:.9}
+.cockpit .c1{top:calc(10px + env(safe-area-inset-top,0px));left:10px}.cockpit .c2{top:calc(10px + env(safe-area-inset-top,0px));right:10px}.cockpit .c3{bottom:calc(10px + env(safe-area-inset-bottom,0px));left:10px}.cockpit .c4{bottom:calc(10px + env(safe-area-inset-bottom,0px));right:10px}
+.cockpit .visor{display:block;position:fixed;inset:0;pointer-events:none;z-index:2;background:radial-gradient(140% 100% at 50% 50%,transparent 58%,rgba(127,232,255,.10) 75%,rgba(0,0,0,.7)),repeating-linear-gradient(0deg,rgba(127,232,255,.035) 0 1px,transparent 1px 4px)}
+.cockpit .visor::before{content:"";position:absolute;left:50%;top:50%;width:min(80vw,520px);height:min(80vw,520px);transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(127,232,255,.10);box-shadow:0 0 0 40px rgba(127,232,255,.02)}
+.cockpit .visor::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(127,232,255,.07),transparent);height:30%;animation:vs 3s linear infinite}
+@keyframes vs{from{transform:translateY(-100%)}to{transform:translateY(400%)}}
+.cockpit .link{display:block;text-align:center;font:800 11px/1 var(--fut);letter-spacing:.2em;color:var(--success);text-shadow:0 0 12px var(--success)}
+.cockpit .think{display:grid;gap:4px;list-style:none;margin:0;padding:10px 12px;border:1px solid rgba(127,232,255,.2);border-radius:10px;background:rgba(0,0,0,.35);min-height:92px;font:600 11.5px/1.45 var(--mono);color:var(--cyan)}
+.think li{animation:in .25s ease both;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.think li b{color:var(--success)}.think li i{font-style:normal;color:var(--primary)}
+body.jack{overflow:hidden}
+#meta{z-index:80}#edge{z-index:75}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.hud{transform:none!important}}
 </style>
 </head>
 <body>
 <canvas id="bg" aria-hidden="true"></canvas>
 <div class="vig" aria-hidden="true"></div>
+<div id="glow" aria-hidden="true"></div>
+<div id="edge" aria-hidden="true"></div>
 
 <main>
   <div>
+    <div class="core" aria-hidden="true"><i class="r3"></i><i class="r1"></i><i class="r2"></i><b></b></div>
     <div class="logo">China<span>Pro</span></div>
     <div class="tag">ROBÔ DE AUTOMAÇÃO · MULTI-CONTAS</div>
   </div>
 
+  <div class="ticker" aria-hidden="true"><div id="tk"></div></div>
+
   <h1 id="h1">O robô opera por você. <em>Os limites são seus.</em></h1>
-  <p class="lead">Configure o seu robô e veja ele operando em tempo real.</p>
+  <p class="lead">Configure o seu robô e entre nele para ver, por dentro, como ele opera.</p>
 
   <div class="stage" id="sim">
   <section class="hud" id="hud" aria-label="Simulação do robô">
+    <div class="visor" aria-hidden="true"></div>
     <i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i>
     <div class="hh"><span><span class="dot"></span><span id="st">NÚCLEO EM ESPERA</span></span><button class="snd" id="snd" type="button" aria-pressed="true">🔊 SOM</button></div>
 
@@ -158,12 +221,14 @@ h1.gl{animation:gl .38s steps(2) 1}
       <div class="plan" id="plan"></div>
     </div>
 
+    <div class="link" id="link">◉ CONEXÃO NEURAL ESTABELECIDA · VOCÊ ESTÁ DENTRO DO ROBÔ</div>
+    <ul class="think" id="think" aria-live="polite"></ul>
     <div class="screen"><canvas id="cv"></canvas><div class="ov"><span id="scan">RADAR · 6 ATIVOS</span><span id="asset">—</span></div><div class="combo" id="combo"></div></div>
 
     <div class="stats" id="stats"><div>Resultado<b id="net">R$ 0,00</b></div><div>Wins<b id="wn" class="w">0</b></div><div>Losses<b id="ls" class="l">0</b></div></div>
     <ul class="feed" id="feed"></ul>
     <div class="win" id="done" hidden>🏆 Meta alcançada, o robô parou sozinho<b id="fin"></b></div>
-    <button class="go" id="go" type="button">▶ Ligar meu robô</button>
+    <button class="go" id="go" type="button">▶ Entrar no robô</button>
     <p class="tl" id="tl"></p>
     <p class="fine">Simulação ilustrativa com valores aleatórios. Não representa resultados reais.</p>
   </section>
@@ -176,7 +241,7 @@ h1.gl{animation:gl .38s steps(2) 1}
     <a class="cta hot js-buy" id="hotcta" href="https://pay.cakto.com.br/kahnuwc_1145428" target="_blank" rel="noopener" hidden>🔥 Quero aproveitar agora<small>Oportunidade imperdível · acesso imediato</small></a>
   </div>
 
-  <ul class="feats">
+  <ul class="feats rv">
     <li>Opera sozinho, até com o computador desligado</li>
     <li>Quantas contas você quiser ao mesmo tempo</li>
     <li>Mercado aberto e OTC no automático</li>
@@ -184,7 +249,7 @@ h1.gl{animation:gl .38s steps(2) 1}
     <li>Teste grátis na conta demo antes da real</li>
   </ul>
 
-  <div class="box" id="oferta">
+  <div class="box rv" id="oferta">
     <div class="price"><small>R$</small>19,90</div>
     <div class="sub">pagamento único · acesso imediato</div>
     <a class="cta js-buy" href="https://pay.cakto.com.br/kahnuwc_1145428" target="_blank" rel="noopener">Quero o ChinaPro<small>Pix ou cartão</small></a>
@@ -267,6 +332,37 @@ h1.gl{animation:gl .38s steps(2) 1}
     })();
   }
 
+
+  // ===== Camada futurista =====
+  // faixa de mercado
+  (function () {
+    var it = ["EUR/USD", "GBP/JPY", "AUD/CAD", "USD/CHF", "EUR/JPY", "GBP/USD", "BTC/USD"], st = ["ANALISANDO", "SINAL", "OTC", "ABERTO", "VARRENDO"], h = "";
+    for (var r = 0; r < 2; r++) it.forEach(function (a, i) { var up = (i + r) % 3 !== 0; h += "<span>" + a + " <b class=\"" + (up ? "w" : "l") + "\">" + (up ? "▲" : "▼") + "</b> " + st[(i + r) % st.length] + "</span>"; });
+    $("tk").innerHTML = h;
+  })();
+  // título se decodificando
+  function decode(el, dur) {
+    if (reduce) return; var nodes = [], G = "!<>-_\\/[]{}=+*^?#ABCDEF0123456789";
+    (function walk(n) { n.childNodes.forEach(function (c) { if (c.nodeType === 3 && c.textContent.trim()) nodes.push({ n: c, t: c.textContent }); else if (c.nodeType === 1) walk(c); }); })(el);
+    var t0 = performance.now();
+    (function f(now) {
+      var p = Math.min(1, (now - t0) / dur);
+      nodes.forEach(function (o) { var k = Math.floor(o.t.length * p), s = o.t.slice(0, k); for (var i = k; i < o.t.length; i++) s += o.t[i] === " " ? " " : G[Math.floor(Math.random() * G.length)]; o.n.textContent = s; });
+      if (p < 1) requestAnimationFrame(f);
+    })(t0);
+  }
+  setTimeout(function () { decode($("h1"), 1100); }, seen ? 100 : 1900);
+  // brilho que segue o cursor
+  var glow = $("glow"); addEventListener("pointermove", function (e) { glow.style.transform = "translate(" + e.clientX + "px," + e.clientY + "px)"; }, { passive: true });
+  // seções entram com varredura
+  if ("IntersectionObserver" in window && !reduce) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && e.boundingClientRect.top > 40) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { threshold: .25 });
+    document.querySelectorAll(".rv").forEach(function (el) { if (el.getBoundingClientRect().top > innerHeight) io.observe(el); });
+  }
+  function edge(win) { var e = $("edge"); e.className = ""; void e.offsetWidth; e.className = win ? "g" : "r"; }
+  // números contando
+  function countTo(el, from, to, fmt) { if (reduce) { el.textContent = fmt(to); return; } var t0 = performance.now(); (function f(n) { var p = Math.min(1, (n - t0) / 380), v = from + (to - from) * (1 - Math.pow(1 - p, 3)); el.textContent = fmt(Math.round(v * 100) / 100); if (p < 1) requestAnimationFrame(f); })(t0); }
+
   // ===== Configuração =====
   var cfg = { banca: 500, modo: "a" }, running = false;
   function plan() {
@@ -313,9 +409,17 @@ h1.gl{animation:gl .38s steps(2) 1}
   }
   function fanfare() { [523, 659, 784, 1047].forEach(function (f, i) { setTimeout(function () { blip(f, .22, "triangle", .07); }, i * 110); }); }
 
+
+  // ===== Voz e pensamento do robô =====
+  var voiceOn = "speechSynthesis" in window, ptVoice = null;
+  function pickVoice() { try { var vs = speechSynthesis.getVoices(); ptVoice = vs.filter(function (v) { return /pt(-|_)?BR/i.test(v.lang); })[0] || vs.filter(function (v) { return /^pt/i.test(v.lang); })[0] || null; } catch (e) {} }
+  if (voiceOn) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+  function say(t) { if (!sound || !voiceOn) return; try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = "pt-BR"; if (ptVoice) u.voice = ptVoice; u.rate = 1.12; u.pitch = .7; u.volume = .9; speechSynthesis.speak(u); } catch (e) {} }
+  function think(html) { var ul = $("think"), li = document.createElement("li"); li.innerHTML = "› " + html; ul.appendChild(li); while (ul.children.length > 5) ul.firstChild.remove(); }
+
   // ===== Gráfico + radar =====
   var cv = $("cv"), cx = cv.getContext("2d"), W = 0, H = 0;
-  var candles = [], marks = [], last = .5;
+  var candles = [], marks = [], last = .5, eq = [];
   for (var k = 0; k < 34; k++) { var o = last, cc = Math.min(.82, Math.max(.18, o + (Math.random() - .5) * .1)); candles.push([o, cc]); last = cc; }
   function size() { var r = cv.getBoundingClientRect(); W = cv.width = r.width * dpr; H = cv.height = r.height * dpr; }
   size(); addEventListener("resize", size);
@@ -347,6 +451,14 @@ h1.gl{animation:gl .38s steps(2) 1}
       else { cx.moveTo(x, y - 4 * dpr); cx.lineTo(x - 6 * dpr, y - 14 * dpr); cx.lineTo(x + 6 * dpr, y - 14 * dpr); }
       cx.fill(); cx.shadowBlur = 0;
     });
+    if (eq.length > 1) {
+      var mn = Math.min.apply(null, eq.concat([0])), mx = Math.max.apply(null, eq.concat([1])), pad = 22 * dpr;
+      cx.beginPath(); eq.forEach(function (v, i) { var x = pad + (W - pad * 2 - Math.min(W, H) * .45) * i / (eq.length - 1), y = H - pad - (H - pad * 2) * (v - mn) / (mx - mn || 1); i ? cx.lineTo(x, y) : cx.moveTo(x, y); });
+      cx.strokeStyle = "rgba(127,232,255,.95)"; cx.lineWidth = 2.2 * dpr; cx.shadowBlur = 14 * dpr; cx.shadowColor = "#7fe8ff"; cx.stroke(); cx.shadowBlur = 0;
+      var lx = pad + (W - pad * 2 - Math.min(W, H) * .45), lv = eq[eq.length - 1], lyy = H - pad - (H - pad * 2) * (lv - mn) / (mx - mn || 1);
+      cx.fillStyle = "#fff"; cx.beginPath(); cx.arc(lx, lyy, 3.2 * dpr, 0, 7); cx.fill();
+      cx.font = "700 " + (10 * dpr) + "px ui-monospace,monospace"; cx.fillStyle = "rgba(127,232,255,.9)"; cx.fillText("CURVA DE RESULTADO", pad, H - 8 * dpr);
+    }
     if (running) { sweepY = (sweepY + 2.4 * dpr) % H; var sg = cx.createLinearGradient(0, sweepY - 30 * dpr, 0, sweepY); sg.addColorStop(0, "rgba(127,232,255,0)"); sg.addColorStop(1, "rgba(127,232,255,.18)"); cx.fillStyle = sg; cx.fillRect(0, sweepY - 30 * dpr, W, 30 * dpr); }
     var R = Math.min(W, H) * .2, rx = W - R - 12 * dpr, ry = H - R - 10 * dpr, a = t * (running ? 3.4 : 1.2);
     cx.strokeStyle = "rgba(127,232,255,.35)"; cx.lineWidth = 1 * dpr;
@@ -389,15 +501,20 @@ h1.gl{animation:gl .38s steps(2) 1}
     label(); track("IniciouSimulacao", { teste: used, banca: cfg.banca, modo: cfg.modo });
     var btn = this, i = 0, net = 0, w = 0, l = 0, streak = 0, losses = 1 + (Math.random() < .35 ? 1 : 0), lossAt = [];
     while (lossAt.length < losses) { var p = 1 + Math.floor(Math.random() * 5); if (lossAt.indexOf(p) < 0) lossAt.push(p); }
-    running = true; lockSeg(true); energy = 1; droneOn(); blip(220, .2, "sawtooth", .05);
-    document.body.classList.add("imm"); center($("sim"));
+    running = true; eq = [0]; lockSeg(true); energy = 1; droneOn(); blip(220, .2, "sawtooth", .05);
+    document.body.classList.add("imm", "jack"); hud.classList.add("cockpit"); $("think").innerHTML = ""; setTimeout(size, 60);
+    think("núcleo ativado · banca <i>R$ " + cfg.banca + "</i> · modo <i>" + (cfg.modo === "a" ? "agressivo" : "conservador") + "</i>");
+    think("meta <b>R$ " + cfg.meta + "</b> · limite <i>R$ " + cfg.stop + "</i> · varrendo 6 ativos…");
+    say("Conexão estabelecida. Você está dentro do robô. Iniciando operação.");
     btn.disabled = true; btn.textContent = "Operando…"; $("feed").innerHTML = ""; $("done").hidden = true;
     hud.classList.add("on"); $("net").textContent = brl(0); $("net").className = ""; $("wn").textContent = 0; $("ls").textContent = 0;
-    function scan(cb) { $("st").textContent = "ESCANEANDO MERCADO"; $("scan").textContent = "RADAR · ANALISANDO"; $("asset").textContent = "—"; setTimeout(cb, 300); }
+    var PAT = ["MHI", "Três Vizinhos", "Padrão 23", "Melhor de 3", "Confluência"];
+    function scan(cb) { $("st").textContent = "ESCANEANDO MERCADO"; $("scan").textContent = "RADAR · ANALISANDO"; $("asset").textContent = "—"; setTimeout(cb, 420); }
     function step() {
       var asset = A[Math.floor(Math.random() * A.length)], up = Math.random() < .5;
       $("st").textContent = "ENTRADA EM " + asset; $("scan").textContent = up ? "CALL ▲" : "PUT ▼"; $("asset").textContent = asset;
       marks.push({ i: candles.length - 1, up: up }); blip(up ? 520 : 440, .05, "triangle", .03);
+      think("padrão <i>" + PAT[Math.floor(Math.random() * PAT.length)] + "</i> em " + asset + " · confiança <b>" + Math.round(rnd(78, 94)) + "%</b> · entrada " + (up ? "<b>CALL ▲</b>" : "<i>PUT ▼</i>"));
       setTimeout(function () {
         var stake = Math.round(cfg.stake * rnd(.75, 1.3)), win = lossAt.indexOf(i) < 0;
         var r = win ? Math.round(stake * rnd(.85, .92) * 100) / 100 : -stake;
@@ -406,27 +523,30 @@ h1.gl{animation:gl .38s steps(2) 1}
         var li = document.createElement("li");
         li.innerHTML = "<span>" + asset + (up ? " ↑" : " ↓") + " <span style=\"opacity:.55\">R$ " + stake + "</span></span><span class=\"" + (win ? "w" : "l") + "\">" + (win ? "WIN " : "LOSS ") + brl(r) + "</span>";
         $("feed").prepend(li); while ($("feed").children.length > 5) $("feed").lastChild.remove();
+        eq.push(net); edge(win);
         $("net").className = ""; void $("net").offsetWidth;
-        $("net").textContent = brl(net); $("net").className = (net > 0 ? "w" : net < 0 ? "l" : "") + " pop";
+        countTo($("net"), net - r, net, brl); $("net").className = (net > 0 ? "w" : net < 0 ? "l" : "") + " pop";
         var f = document.createElement("span"); f.className = "fl " + (win ? "w" : "l"); f.textContent = brl(r); $("stats").appendChild(f); setTimeout(function () { f.remove(); }, 1000);
         hud.classList.remove("flash", "hit"); void hud.offsetWidth; hud.classList.add(win ? "flash" : "hit");
         tint = win ? [78, 227, 154] : [255, 107, 94];
         if (win && streak >= 2) { var cb = $("combo"); cb.textContent = "COMBO x" + streak; cb.classList.remove("show"); void cb.offsetWidth; cb.classList.add("show"); }
         fx(win);
+        think("resultado " + (win ? "<b>WIN " + brl(r) + "</b>" : "<i>LOSS " + brl(r) + "</i> · recalibrando") + " · saldo " + brl(net));
+        if (!win) say("Loss. Recalibrando."); else if (streak === 3) say("Três seguidas."); else if (net >= cfg.meta * .7 && net - r < cfg.meta * .7) say("Meta próxima.");
         $("wn").textContent = w; $("ls").textContent = l; i++;
         if (net >= cfg.meta || i > 40) return finish();
         scan(step);
-      }, 340);
+      }, 520);
     }
     function finish() {
-      running = false; energy = 0; droneOff(); fanfare(); burst("78,227,154", 110); tint = [78, 227, 154];
+      running = false; energy = 0; droneOff(); think("<b>meta atingida · encerrando operação</b>"); say("Meta atingida. Encerrando operação."); fanfare(); burst("78,227,154", 110); tint = [78, 227, 154];
       if (navigator.vibrate) try { navigator.vibrate([50, 40, 50, 40, 120]); } catch (e) {}
       if (!reduce) { var m = document.createElement("div"); m.id = "meta"; m.innerHTML = "<div>META ATINGIDA<small>" + brl(net) + " · o robô parou sozinho</small></div>"; document.body.appendChild(m); setTimeout(function () { m.remove(); }, 1950); }
       hud.classList.remove("on"); $("st").textContent = "META ATINGIDA · ROBÔ PAROU"; $("scan").textContent = "RADAR · 6 ATIVOS";
       $("fin").textContent = brl(net); $("done").hidden = false;
       track("TerminouSimulacao", { teste: used, resultado: net });
       setTimeout(function () {
-        document.body.classList.remove("imm");
+        document.body.classList.remove("imm", "jack"); hud.classList.remove("cockpit"); setTimeout(size, 60); center($("sim"));
         if (left()) { lockSeg(false); btn.disabled = false; btn.textContent = "↻ Usar meu último teste"; }
         else { lockSeg(true); showOffer(true); }
       }, reduce ? 0 : 1900);
