@@ -198,6 +198,8 @@ h1.gl{animation:gl .38s steps(2) 1}
 <script>
 (function () {
   "use strict";
+  // Link de teste: ?reset zera os testes gratuitos e a introdução
+  if (/[?&]reset/.test(location.search)) { try { localStorage.removeItem("cp_testes"); sessionStorage.removeItem("cp_boot"); } catch (e) {} history.replaceState(null, "", location.pathname); }
   var $ = function (i) { return document.getElementById(i); };
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   var mobile = matchMedia("(max-width: 700px)").matches;
