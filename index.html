@@ -200,11 +200,32 @@ body.jack main{z-index:60}
 .dock a{flex:1;min-height:50px;font-size:14px}
 body.jack .dock{display:none}
 
+
+/* ===== camada 3D / sobrenatural ===== */
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.2s}
+body.g3 #gl{opacity:1}
+body.g3 .core>*{opacity:0;transition:opacity .6s}
+.core{width:170px;height:170px;margin:0 auto 4px}
+#flash{position:fixed;inset:0;z-index:90;pointer-events:none;background:radial-gradient(circle,#fff,rgba(127,232,255,.6) 40%,transparent 75%);opacity:0}
+#flash.on{animation:fls .7s ease-out}
+@keyframes fls{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+.hud.cockpit{background:radial-gradient(90% 70% at 50% 45%,rgba(4,10,14,.35),rgba(2,4,6,.82) 75%)!important;backdrop-filter:none}
+.cockpit .screen,.cockpit .think,.cockpit .stats div,.cockpit .feed{background:rgba(4,6,8,.62);backdrop-filter:blur(6px)}
+.go{--p:0;touch-action:none;-webkit-user-select:none;user-select:none}
+.go .fill{position:absolute;inset:0;background:linear-gradient(90deg,rgba(78,227,154,.95),rgba(127,232,255,.95));transform-origin:left;transform:scaleX(var(--p));pointer-events:none}
+.go .lbl{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:10px}
+.go .fp{width:22px;height:22px;flex:none}
+.go.charging{animation:chg .25s linear infinite}
+@keyframes chg{50%{box-shadow:0 0 0 3px rgba(127,232,255,.5),0 0 40px rgba(127,232,255,.7)}}
+.hint{font:600 10px/1 var(--mono);color:var(--muted);text-align:center;letter-spacing:.12em;margin:-4px 0 0}
+.mag{transition:transform .2s cubic-bezier(.2,.8,.2,1)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.hud{transform:none!important}}
 </style>
 </head>
 <body>
+<canvas id="gl" aria-hidden="true"></canvas>
 <canvas id="bg" aria-hidden="true"></canvas>
+<div id="flash" aria-hidden="true"></div>
 <div class="vig" aria-hidden="true"></div>
 <div id="glow" aria-hidden="true"></div>
 <div id="edge" aria-hidden="true"></div>
@@ -240,7 +261,8 @@ body.jack .dock{display:none}
     <div class="stats" id="stats"><div>Resultado<b id="net">R$ 0,00</b></div><div>Wins<b id="wn" class="w">0</b></div><div>Losses<b id="ls" class="l">0</b></div></div>
     <ul class="feed" id="feed"></ul>
     <div class="win" id="done" hidden>🏆 Meta alcançada, o robô parou sozinho<b id="fin"></b></div>
-    <button class="go" id="go" type="button">▶ Entrar no robô</button>
+    <button class="go" id="go" type="button"><span class="fill"></span><span class="lbl"><svg class="fp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 11v3m-3.5-4.5a3.5 3.5 0 0 1 7 0V14a7 7 0 0 1-1 3.6M6 9a6 6 0 0 1 12 0v4m-12 0v-2m3 9a10 10 0 0 0 1-4.5V10.5"/></svg><span id="golbl">Segure para entrar no robô</span></span></button>
+    <p class="hint" id="hint">TOQUE E SEGURE · LEITURA BIOMÉTRICA</p>
     <p class="tl" id="tl"></p>
     <p class="fine">Simulação ilustrativa com valores aleatórios. Não representa resultados reais.</p>
   </section>
@@ -264,7 +286,7 @@ body.jack .dock{display:none}
   <div class="box rv" id="oferta">
     <div class="price"><small>R$</small>19,90</div>
     <div class="sub">pagamento único · acesso imediato</div>
-    <a class="cta js-buy" href="https://pay.cakto.com.br/kahnuwc_1145428" target="_blank" rel="noopener">Quero o ChinaPro<small>Pix ou cartão</small></a>
+    <a class="cta js-buy mag" href="https://pay.cakto.com.br/kahnuwc_1145428" target="_blank" rel="noopener">Quero o ChinaPro<small>Pix ou cartão</small></a>
     <div class="bump"><span class="ck">✓</span><div><b>Na hora da compra, adicione o <span>Robô BTCUSD</span></b><p>Opera Bitcoin a noite toda enquanto você dorme, com os mesmos limites de risco. Marque a opção na página de pagamento.</p></div></div>
     <div class="trust"><span>🔒 Compra segura</span><span class="g">✓ Garantia de 7 dias</span></div>
   </div>
@@ -280,6 +302,7 @@ body.jack .dock{display:none}
   // Link de teste: ?reset zera os testes gratuitos e a introdução
   if (/[?&]reset/.test(location.search)) { try { localStorage.removeItem("cp_testes"); sessionStorage.removeItem("cp_boot"); } catch (e) {} history.replaceState(null, "", location.pathname); }
   var $ = function (i) { return document.getElementById(i); };
+  var G3 = { on: false, energy: 0, dive: 0, charge: 0, hit: function () {}, shock: function () {} };
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   var mobile = matchMedia("(max-width: 700px)").matches;
   var dpr = Math.min(2, devicePixelRatio || 1);
@@ -301,6 +324,7 @@ body.jack .dock{display:none}
     px += (tpx - px) * .06; py += (tpy - py) * .06;
     bx.clearRect(0, 0, BW, BH);
     var sp = 1 + energy * 6, link = (mobile ? 90 : 120) * dpr, pts = [];
+    if (!G3.on) {
     for (var i = 0; i < P.length; i++) {
       var p = P[i]; p.x = (p.x + p.vx * sp + 1) % 1; p.y = (p.y + p.vy * sp - .00015 * energy * p.z + 1) % 1;
       var X = p.x * BW - px * 40 * dpr * p.z, Y = p.y * BH - py * 40 * dpr * p.z; pts.push([X, Y, p.z]);
@@ -310,6 +334,7 @@ body.jack .dock{display:none}
     for (i = 0; i < pts.length; i++) for (var j = i + 1; j < pts.length; j++) {
       var dx = pts[i][0] - pts[j][0], dy = pts[i][1] - pts[j][1], d = dx * dx + dy * dy;
       if (d < link * link) { bx.strokeStyle = "rgba(" + tint + "," + ((1 - Math.sqrt(d) / link) * (.12 + energy * .25)) + ")"; bx.beginPath(); bx.moveTo(pts[i][0], pts[i][1]); bx.lineTo(pts[j][0], pts[j][1]); bx.stroke(); }
+    }
     }
     for (i = bursts.length - 1; i >= 0; i--) { var b = bursts[i]; b.x += b.vx; b.y += b.vy; b.vy += .00012; b.life -= .014; if (b.life <= 0) { bursts.splice(i, 1); continue; } bx.fillStyle = "rgba(" + b.c + "," + b.life + ")"; bx.beginPath(); bx.arc(b.x * BW, b.y * BH, 2.4 * dpr, 0, 7); bx.fill(); }
     tint = tint.map(function (v, k) { return Math.round(v + ([127, 232, 255][k] - v) * .03); });
@@ -375,9 +400,90 @@ body.jack .dock{display:none}
     var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && e.boundingClientRect.top > 40) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { threshold: .25 });
     document.querySelectorAll(".rv").forEach(function (el) { if (el.getBoundingClientRect().top > innerHeight) io.observe(el); });
   }
+  document.querySelectorAll(".mag").forEach(function (el) { if (mobile) return; el.addEventListener("pointermove", function (e) { var r = el.getBoundingClientRect(); el.style.transform = "translate(" + ((e.clientX - r.left) / r.width - .5) * 14 + "px," + ((e.clientY - r.top) / r.height - .5) * 10 + "px)"; }); el.addEventListener("pointerleave", function () { el.style.transform = ""; }); });
   function edge(win) { var e = $("edge"); e.className = ""; void e.offsetWidth; e.className = win ? "g" : "r"; }
   // números contando
   function countTo(el, from, to, fmt) { if (reduce) { el.textContent = fmt(to); return; } var t0 = performance.now(); (function f(n) { var p = Math.min(1, (n - t0) / 380), v = from + (to - from) * (1 - Math.pow(1 - p, 3)); el.textContent = fmt(Math.round(v * 100) / 100); if (p < 1) requestAnimationFrame(f); })(t0); }
+
+
+  // ===== Núcleo 3D (WebGL) =====
+  function load3D() {
+    if (reduce) return;
+    try { var t = document.createElement("canvas"); if (!(t.getContext("webgl2") || t.getContext("webgl"))) return; } catch (e) { return; }
+    var sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"; sc.async = true; sc.onload = init3D; document.head.appendChild(sc);
+  }
+  function init3D() {
+    var T = window.THREE; if (!T) return;
+    var cvs = $("gl"), R;
+    try { R = new T.WebGLRenderer({ canvas: cvs, antialias: !mobile, alpha: true, powerPreference: "high-performance" }); } catch (e) { return; }
+    var pr = Math.min(devicePixelRatio || 1, weak ? 1 : 1.75); R.setPixelRatio(pr); R.setSize(innerWidth, innerHeight, false);
+    var S = new T.Scene(), C = new T.PerspectiveCamera(50, innerWidth / innerHeight, .1, 120); C.position.set(0, 0, 8);
+    addEventListener("resize", function () { R.setSize(innerWidth, innerHeight, false); C.aspect = innerWidth / innerHeight; C.updateProjectionMatrix(); });
+    var ADD = T.AdditiveBlending;
+    function glowTex(inner, outer) { var c = document.createElement("canvas"); c.width = c.height = 128; var x = c.getContext("2d"), g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, inner); g.addColorStop(.25, outer); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new T.CanvasTexture(c); }
+    var core = new T.Group(); S.add(core);
+    // nuvem neural (shader)
+    var N = weak ? 1400 : mobile ? 2600 : 4200, pos = new Float32Array(N * 3), seed = new Float32Array(N);
+    for (var i = 0; i < N; i++) { var u = Math.random() * 2 - 1, th = Math.random() * 6.2832, r = 1.55 + Math.pow(Math.random(), 3) * .9, q = Math.sqrt(1 - u * u); pos[i * 3] = q * Math.cos(th) * r; pos[i * 3 + 1] = u * r; pos[i * 3 + 2] = q * Math.sin(th) * r; seed[i] = Math.random(); }
+    var cg = new T.BufferGeometry(); cg.setAttribute("position", new T.BufferAttribute(pos, 3)); cg.setAttribute("seed", new T.BufferAttribute(seed, 1));
+    var U = { t: { value: 0 }, e: { value: 0 }, pc: { value: new T.Color(0x7fe8ff) }, pa: { value: 0 }, px: { value: pr * (mobile ? 1.1 : 1) } };
+    var cloud = new T.Points(cg, new T.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: ADD,
+      vertexShader: "attribute float seed;uniform float t,e,pa,px;varying float vS;varying float vD;void main(){vec3 p=position;float w=sin(t*1.3+p.x*2.7+seed*6.)*cos(t*1.1+p.y*3.1)*(.07+e*.16);p*=1.+w+pa*.12*sin(seed*20.+t*9.);vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;float s=(1.4+seed*2.6)*(1.+e*.6+pa*1.2);gl_PointSize=s*px*(9./-mv.z);vS=seed;vD=length(position);}",
+      fragmentShader: "uniform vec3 pc;uniform float pa,t;varying float vS;varying float vD;void main(){vec2 c=gl_PointCoord-.5;float d=length(c);if(d>.5)discard;float a=smoothstep(.5,0.,d);vec3 cy=vec3(.5,.91,1.),or=vec3(.94,.54,.24);vec3 col=mix(cy,or,smoothstep(1.7,2.3,vD)*.8+.15*sin(vS*30.+t));col=mix(col,pc,pa);gl_FragColor=vec4(col,a*(.55+.45*sin(vS*50.+t*2.)));}" }));
+    core.add(cloud);
+    // estrutura geométrica
+    var wire = new T.LineSegments(new T.EdgesGeometry(new T.IcosahedronGeometry(1.05, 1)), new T.LineBasicMaterial({ color: 0x7fe8ff, transparent: true, opacity: .55, blending: ADD, depthWrite: false }));
+    var inner = new T.LineSegments(new T.EdgesGeometry(new T.IcosahedronGeometry(.55, 0)), new T.LineBasicMaterial({ color: 0xf08a3c, transparent: true, opacity: .9, blending: ADD, depthWrite: false }));
+    core.add(wire); core.add(inner);
+    var g1 = new T.Sprite(new T.SpriteMaterial({ map: glowTex("rgba(255,240,220,1)", "rgba(240,138,60,.65)"), blending: ADD, depthWrite: false, transparent: true })); g1.scale.set(1.9, 1.9, 1); core.add(g1);
+    var g2 = new T.Sprite(new T.SpriteMaterial({ map: glowTex("rgba(127,232,255,.5)", "rgba(127,232,255,.12)"), blending: ADD, depthWrite: false, transparent: true, opacity: .8 })); g2.scale.set(7, 7, 1); core.add(g2);
+    // anéis orbitais
+    var rings = [];
+    [[2.15, .2, 0x7fe8ff], [2.45, 1.1, 0xf08a3c], [2.8, -.7, 0x7fe8ff]].forEach(function (d, k) {
+      var n = 220, a = new Float32Array(n * 3); for (var j = 0; j < n; j++) { var an = j / n * 6.2832; a[j * 3] = Math.cos(an) * d[0]; a[j * 3 + 2] = Math.sin(an) * d[0]; a[j * 3 + 1] = 0; }
+      var g = new T.BufferGeometry(); g.setAttribute("position", new T.BufferAttribute(a, 3));
+      var m = new T.Points(g, new T.PointsMaterial({ color: d[2], size: .035, transparent: true, opacity: k === 1 ? .9 : .55, blending: ADD, depthWrite: false })); m.rotation.x = d[1]; m.rotation.z = k * .6; core.add(m); rings.push(m);
+    });
+    // onda de choque
+    var shock = new T.Mesh(new T.RingGeometry(.98, 1, 96), new T.MeshBasicMaterial({ color: 0x4ee39a, transparent: true, opacity: 0, blending: ADD, side: T.DoubleSide, depthWrite: false })); core.add(shock);
+    // túnel de dados
+    var M = weak ? 500 : 1200, tp = new Float32Array(M * 3);
+    for (i = 0; i < M; i++) { var ang = Math.random() * 6.2832, rr = 1.6 + Math.random() * 7; tp[i * 3] = Math.cos(ang) * rr; tp[i * 3 + 1] = Math.sin(ang) * rr; tp[i * 3 + 2] = -60 + Math.random() * 66; }
+    var tg = new T.BufferGeometry(); tg.setAttribute("position", new T.BufferAttribute(tp, 3));
+    var tunnel = new T.Points(tg, new T.PointsMaterial({ color: 0x7fe8ff, size: .06, transparent: true, opacity: .55, blending: ADD, depthWrite: false })); S.add(tunnel);
+    // API usada pela simulação
+    var pulse = 0, shk = 0, mx = 0, my = 0;
+    G3.hit = function (win) { U.pc.value.set(win ? 0x4ee39a : 0xff6b5e); pulse = 1; };
+    G3.shock = function () { shk = .001; };
+    G3.on = true; document.body.classList.add("g3");
+    addEventListener("pointermove", function (e) { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
+    addEventListener("deviceorientation", function (e) { if (e.gamma == null) return; mx = Math.max(-.5, Math.min(.5, e.gamma / 70)); my = Math.max(-.5, Math.min(.5, (e.beta - 45) / 80)); }, { passive: true });
+    var ph = document.querySelector(".core"), clock = new T.Clock(), sp = 0, E = 0, D = 0, Cg = 0, rx = 0, ry = 0;
+    (function loop() {
+      if (document.hidden) { setTimeout(loop, 300); return; }
+      requestAnimationFrame(loop);
+      var dt = Math.min(.05, clock.getDelta()), t = clock.elapsedTime;
+      E += (G3.energy - E) * .05; D += (G3.dive - D) * (G3.dive ? .045 : .06); Cg += (G3.charge - Cg) * .2;
+      U.t.value = t; U.e.value = E + Cg * .8; pulse *= .93; U.pa.value = pulse;
+      // posição: segue o espaço reservado no topo; mergulha para o centro
+      var visH = 2 * Math.tan(C.fov * Math.PI / 360) * C.position.z, k = visH / innerHeight, r = ph.getBoundingClientRect();
+      var tx = (r.left + r.width / 2 - innerWidth / 2) * k, ty = -(r.top + r.height / 2 - innerHeight / 2) * k, base = (r.width * .55) * k / 1.8;
+      core.position.x = tx * (1 - D); core.position.y = ty * (1 - D);
+      var s = base * (1 + Cg * .25) * (1 - D) + D * 7.5; core.scale.setScalar(s);
+      rx += (my * .5 - rx) * .05; ry += (mx * .8 - ry) * .05;
+      core.rotation.y = t * (.12 + E * .5) + ry; core.rotation.x = rx + Math.sin(t * .3) * .1;
+      wire.rotation.y = -t * (.25 + E); wire.rotation.z = t * .1; inner.rotation.x = t * (.6 + E * 2); inner.rotation.y = t * .4;
+      rings.forEach(function (m, j) { m.rotation.y = t * (.2 + j * .12) * (j % 2 ? -1 : 1) * (1 + E * 3); });
+      g1.material.opacity = .75 + .25 * Math.sin(t * 2.4) + pulse * .4; g2.material.opacity = .55 + E * .3 + pulse * .5;
+      if (shk) { shk += dt * 1.6; shock.scale.setScalar(1 + shk * 9); shock.material.opacity = Math.max(0, .9 - shk); shock.lookAt(C.position); if (shk > 1) { shk = 0; shock.material.opacity = 0; } }
+      sp += ((.6 + E * 26 + D * 30) - sp) * .06;
+      var a = tg.attributes.position.array; for (var j = 2; j < a.length; j += 3) { a[j] += sp * dt; if (a[j] > 7) a[j] -= 66; }
+      tg.attributes.position.needsUpdate = true; tunnel.material.opacity = .25 + E * .5 + D * .2; tunnel.material.size = .05 + E * .05;
+      C.position.x += (mx * .4 - C.position.x) * .04; C.position.y += (-my * .3 - C.position.y) * .04; C.lookAt(0, 0, 0);
+      R.render(S, C);
+    })();
+  }
+  if (document.readyState === "complete") setTimeout(load3D, 200); else addEventListener("load", function () { setTimeout(load3D, 200); });
 
   // ===== Configuração =====
   var cfg = { banca: 500, modo: "a" }, running = false;
@@ -518,7 +624,7 @@ body.jack .dock{display:none}
   function lockSeg(v) { document.querySelectorAll(".seg button").forEach(function (b) { b.disabled = v; }); }
   function center(el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" }); }
   function showOffer(animate) {
-    $("go").disabled = true; $("go").textContent = "Testes gratuitos esgotados";
+    $("go").disabled = true; $("golbl").textContent = "Testes gratuitos esgotados"; $("hint").hidden = true;
     $("utxt").innerHTML = "Seu robô <b>" + (cfg.modo === "a" ? "Agressivo" : "Conservador") + "</b> com banca de <b>R$ " + cfg.banca + "</b> está pronto. Ative o ChinaPro completo por apenas <b>R$ 19,90</b>, pagamento único.";
     $("unlock").hidden = false; track("TestesEsgotados");
     if ("IntersectionObserver" in window) { var dk = $("dock"), vis = {}; var dio = new IntersectionObserver(function (es) { es.forEach(function (e) { vis[e.target.id] = e.isIntersecting; }); var show = !vis.unlock && !vis.oferta; dk.classList.toggle("show", show); dk.setAttribute("aria-hidden", !show); }); dio.observe($("unlock")); dio.observe($("oferta")); }
@@ -533,18 +639,18 @@ body.jack .dock{display:none}
   label();
   if (!left()) showOffer(false);
 
-  $("go").onclick = function () {
+  function runSim() {
     if (!left()) return showOffer(true);
     used++; try { localStorage.setItem("cp_testes", used); } catch (e) {}
     label(); track("IniciouSimulacao", { teste: used, banca: cfg.banca, modo: cfg.modo });
-    var btn = this, i = 0, net = 0, w = 0, l = 0, streak = 0, losses = 1 + (Math.random() < .35 ? 1 : 0), lossAt = [];
+    var btn = $("go"), i = 0, net = 0, w = 0, l = 0, streak = 0, losses = 1 + (Math.random() < .35 ? 1 : 0), lossAt = [];
     while (lossAt.length < losses) { var p = 1 + Math.floor(Math.random() * 5); if (lossAt.indexOf(p) < 0) lossAt.push(p); }
-    running = true; eq = [0]; lockSeg(true); energy = 1; droneOn(); blip(220, .2, "sawtooth", .05);
+    running = true; eq = [0]; lockSeg(true); energy = 1; G3.energy = 1; G3.dive = 1; droneOn(); blip(220, .2, "sawtooth", .05);
     document.body.classList.add("imm", "jack"); hud.classList.add("cockpit"); $("think").innerHTML = ""; setTimeout(size, 60);
     think("núcleo ativado · banca <i>R$ " + cfg.banca + "</i> · modo <i>" + (cfg.modo === "a" ? "agressivo" : "conservador") + "</i>");
     think("meta <b>R$ " + cfg.meta + "</b> · limite <i>R$ " + cfg.stop + "</i> · varrendo 6 ativos…");
     say("Conexão estabelecida. Você está dentro do robô. Vou começar a operar agora.", true);
-    btn.disabled = true; btn.textContent = "Operando…"; $("feed").innerHTML = ""; $("done").hidden = true;
+    btn.disabled = true; $("golbl").textContent = "Operando…"; $("hint").hidden = true; $("feed").innerHTML = ""; $("done").hidden = true;
     hud.classList.add("on"); $("net").textContent = brl(0); $("net").className = ""; $("wn").textContent = 0; $("ls").textContent = 0;
     var PAT = ["MHI", "Três Vizinhos", "Padrão 23", "Melhor de 3", "Confluência"];
     function scan(cb) { $("st").textContent = "ESCANEANDO MERCADO"; $("scan").textContent = "RADAR · ANALISANDO"; $("asset").textContent = "—"; setTimeout(cb, 420); }
@@ -568,7 +674,7 @@ body.jack .dock{display:none}
         hud.classList.remove("flash", "hit"); void hud.offsetWidth; hud.classList.add(win ? "flash" : "hit");
         tint = win ? [78, 227, 154] : [255, 107, 94];
         if (win && streak >= 2) { var cb = $("combo"); cb.textContent = "COMBO x" + streak; cb.classList.remove("show"); void cb.offsetWidth; cb.classList.add("show"); }
-        fx(win);
+        fx(win); G3.hit(win);
         think("resultado " + (win ? "<b>WIN " + brl(r) + "</b>" : "<i>LOSS " + brl(r) + "</i> · recalibrando") + " · saldo " + brl(net));
         if (!win) say("Essa não entrou. Recalibrando."); else if (streak === 3) say("Três seguidas."); else if (net >= cfg.meta * .7 && net - r < cfg.meta * .7) say("Estamos perto da meta.");
         $("wn").textContent = w; $("ls").textContent = l; i++;
@@ -577,20 +683,40 @@ body.jack .dock{display:none}
       }, 520);
     }
     function finish() {
-      running = false; energy = 0; droneOff(); think("<b>meta atingida · encerrando operação</b>"); say("Meta atingida. Encerrando a operação.", true); fanfare(); burst("78,227,154", 110); tint = [78, 227, 154];
+      running = false; energy = 0; G3.energy = 0; G3.shock(); droneOff(); think("<b>meta atingida · encerrando operação</b>"); say("Meta atingida. Encerrando a operação.", true); fanfare(); burst("78,227,154", 110); tint = [78, 227, 154];
       if (navigator.vibrate) try { navigator.vibrate([50, 40, 50, 40, 120]); } catch (e) {}
       if (!reduce) { var m = document.createElement("div"); m.id = "meta"; m.innerHTML = "<div>META ATINGIDA<small>" + brl(net) + " · o robô parou sozinho</small></div>"; document.body.appendChild(m); setTimeout(function () { m.remove(); }, 1950); }
       hud.classList.remove("on"); $("st").textContent = "META ATINGIDA · ROBÔ PAROU"; $("scan").textContent = "RADAR · 6 ATIVOS";
       $("fin").textContent = brl(net); $("done").hidden = false;
       track("TerminouSimulacao", { teste: used, resultado: net });
       setTimeout(function () {
-        document.body.classList.remove("imm", "jack"); hud.classList.remove("cockpit"); setTimeout(size, 60); center($("sim"));
-        if (left()) { lockSeg(false); btn.disabled = false; btn.textContent = "↻ Usar meu último teste"; }
+        G3.dive = 0; document.body.classList.remove("imm", "jack"); hud.classList.remove("cockpit"); setTimeout(size, 60); center($("sim"));
+        if (left()) { lockSeg(false); btn.disabled = false; $("golbl").textContent = "Segure para usar o último teste"; $("hint").hidden = false; }
         else { lockSeg(true); showOffer(true); }
       }, reduce ? 0 : 1900);
     }
     setTimeout(function () { scan(step); }, 450);
-  };
+  }
+
+  // ===== Segure para entrar =====
+  (function () {
+    var go = $("go"), p = 0, hold = false, auto = false, t0 = 0, raf = 0, last = 0;
+    function set(v) { p = v; go.style.setProperty("--p", v); G3.charge = v; }
+    function tick(ts) {
+      var dt = last ? Math.min(.05, (ts - last) / 1000) : .016; last = ts;
+      if (hold || auto) { set(Math.min(1, p + dt / .95)); if (Math.floor(p * 20) !== Math.floor((p - dt / .95) * 20)) { blip(300 + p * 900, .03, "square", .02); if (navigator.vibrate) try { navigator.vibrate(8); } catch (e) {} } }
+      else set(Math.max(0, p - dt * 2.2));
+      $("golbl").textContent = p > 0 && p < 1 ? "Sincronizando… " + Math.round(p * 100) + "%" : $("golbl").textContent;
+      if (p >= 1) { hold = auto = false; go.classList.remove("charging"); flash(); set(0); last = 0; runSim(); return; }
+      if (p > 0 || hold || auto) raf = requestAnimationFrame(tick); else { last = 0; go.classList.remove("charging"); $("golbl").textContent = used >= 1 ? "Segure para usar o último teste" : "Segure para entrar no robô"; }
+    }
+    function down(e) { if (go.disabled || running) return; if (!left()) return showOffer(true); e.preventDefault(); actx(); hold = true; t0 = performance.now(); go.classList.add("charging"); if (!raf || p === 0) { last = 0; raf = requestAnimationFrame(tick); } }
+    function up() { if (!hold) return; hold = false; if (performance.now() - t0 < 260) auto = true; }
+    go.addEventListener("pointerdown", down); addEventListener("pointerup", up); addEventListener("pointercancel", up);
+    go.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && !e.repeat) { down(e); auto = true; } });
+    go.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  })();
+  function flash() { var f = $("flash"); f.classList.remove("on"); void f.offsetWidth; f.classList.add("on"); blip(1800, .18, "sine", .05); }
 })();
 </script>
 </body>
