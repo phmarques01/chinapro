@@ -45,6 +45,9 @@ li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:6px;disp
 .feed li:first-child{border-top:0}
 @keyframes in{from{opacity:0;transform:translateY(-5px)}}
 .w{color:var(--success)}.l{color:#ff6b5e}
+.pop{animation:pop .35s ease}@keyframes pop{40%{transform:scale(1.25)}}
+.flash{animation:fl .4s ease}@keyframes fl{30%{box-shadow:0 0 0 2px var(--success),0 0 40px -6px var(--success)}}
+.feed li .w,.feed li .l{font-weight:800}
 .go{min-height:52px;border:0;border-radius:10px;font:800 16px/1 system-ui,sans-serif;cursor:pointer;background:var(--cyan);color:#0d1a1e;text-transform:uppercase}
 .go:disabled{opacity:.5;cursor:default}.go:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .win{text-align:center;border:1px solid rgba(78,227,154,.4);border-radius:10px;padding:12px;font-weight:800;box-shadow:0 8px 30px -14px var(--success)}
@@ -79,12 +82,12 @@ body{margin:0}
   </ul>
 
   <div class="sim" id="sim">
-    <div class="sh"><span><span class="dot"></span><span id="st">ROBÔ DESLIGADO</span></span><span>META R$ 40 · LIMITE R$ 30</span></div>
+    <div class="sh"><span><span class="dot"></span><span id="st">ROBÔ DESLIGADO</span></span><span>META R$ 300 · LIMITE R$ 150</span></div>
     <div class="stats"><div>Resultado<b id="net">R$ 0,00</b></div><div>Wins<b id="wn" class="w">0</b></div><div>Losses<b id="ls" class="l">0</b></div></div>
     <ul class="feed" id="feed"></ul>
     <div class="win" id="done" hidden>🏆 Meta alcançada, o robô parou sozinho<b id="fin"></b></div>
     <button class="go" id="go" type="button">▶ Ligar o robô</button>
-    <p class="fine">Simulação ilustrativa com entradas de R$ 10. Não representa resultados reais.</p>
+    <p class="fine">Simulação ilustrativa com entradas de R$ 50. Não representa resultados reais.</p>
   </div>
 
   <div class="box" id="oferta">
@@ -105,7 +108,7 @@ if (CHECKOUT) { var c = document.getElementById("cta"); c.href = CHECKOUT; c.tar
 
 // Simulação ilustrativa: sequência fixa com perdas, para no stop-win
 (function () {
-  var A = ["EUR/USD", "GBP/JPY", "AUD/CAD", "USD/CHF"], SEQ = [1, 1, 0, 1, 1, 1, 1], PAY = 9, STAKE = 10, META = 40;
+  var A = ["EUR/USD", "GBP/JPY", "AUD/CAD", "USD/CHF", "EUR/JPY"], SEQ = [1, 1, 1, 0, 1, 1, 1, 1, 1], PAY = 45, STAKE = 50, META = 300;
   var $ = function (i) { return document.getElementById(i); };
   var brl = function (v) { return (v < 0 ? "-" : v > 0 ? "+" : "") + "R$ " + Math.abs(v).toFixed(2).replace(".", ","); };
   $("go").onclick = function () {
@@ -117,9 +120,10 @@ if (CHECKOUT) { var c = document.getElementById("cta"); c.href = CHECKOUT; c.tar
       var win = SEQ[i] === 1, r = win ? PAY : -STAKE;
       net += r; win ? w++ : l++;
       var li = document.createElement("li");
-      li.innerHTML = "<span>" + A[i % 4] + (i % 3 ? " ↑" : " ↓") + "</span><span class=\"" + (win ? "w" : "l") + "\">" + (win ? "WIN " : "LOSS ") + brl(r) + "</span>";
-      $("feed").prepend(li); while ($("feed").children.length > 4) $("feed").lastChild.remove();
-      $("net").textContent = brl(net); $("net").className = net > 0 ? "w" : net < 0 ? "l" : "";
+      li.innerHTML = "<span>" + A[i % 5] + (i % 3 ? " ↑" : " ↓") + "</span><span class=\"" + (win ? "w" : "l") + "\">" + (win ? "WIN " : "LOSS ") + brl(r) + "</span>";
+      $("feed").prepend(li); while ($("feed").children.length > 5) $("feed").lastChild.remove();
+      $("net").textContent = brl(net); $("net").className = (net > 0 ? "w" : net < 0 ? "l" : "") + " pop"; void $("net").offsetWidth;
+      if (win) { $("sim").classList.remove("flash"); void $("sim").offsetWidth; $("sim").classList.add("flash"); }
       $("wn").textContent = w; $("ls").textContent = l; i++;
       if (net >= META || i >= SEQ.length) {
         $("sim").classList.remove("on"); $("st").textContent = "META ATINGIDA";
@@ -127,7 +131,7 @@ if (CHECKOUT) { var c = document.getElementById("cta"); c.href = CHECKOUT; c.tar
         b.disabled = false; b.textContent = "↻ Simular de novo";
         return;
       }
-      setTimeout(step, 750);
+      setTimeout(step, 420);
     })();
   };
 })();
