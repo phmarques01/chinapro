@@ -6,6 +6,11 @@
 <meta name="description" content="ChinaPro: robô de automação multi-contas com stop-win e stop-loss.">
 <meta name="theme-color" content="#08080a">
 <title>ChinaPro Oferta</title>
+<meta property="og:title" content="ChinaPro · Entre no robô">
+<meta property="og:description" content="Configure o robô, entre nele e veja por dentro como ele opera. Acesso por R$ 19,90.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2308080a'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%237fe8ff' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='9' fill='%23f08a3c'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
 <style>
@@ -189,6 +194,11 @@ body.jack{overflow:hidden}
 body.jack .stage{perspective:none}
 body.jack main{z-index:60}
 #meta{z-index:80}#edge{z-index:75}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:12px;align-items:center;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:rgba(8,8,10,.9);backdrop-filter:blur(12px);border-top:1px solid rgba(240,138,60,.4);transform:translateY(110%);transition:transform .35s}
+.dock.show{transform:none}
+.dock .pr{font:900 18px/1.1 var(--fut);white-space:nowrap}.dock .pr small{display:block;font:600 10px/1 var(--mono);color:var(--muted);margin-top:3px}
+.dock a{flex:1;min-height:50px;font-size:14px}
+body.jack .dock{display:none}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.hud{transform:none!important}}
 </style>
@@ -259,6 +269,8 @@ body.jack main{z-index:60}
     <div class="trust"><span>🔒 Compra segura</span><span class="g">✓ Garantia de 7 dias</span></div>
   </div>
 
+  <div class="dock" id="dock" aria-hidden="true"><div class="pr">R$ 19,90<small>ACESSO IMEDIATO</small></div><a class="cta hot js-buy" href="https://pay.cakto.com.br/kahnuwc_1145428" target="_blank" rel="noopener" tabindex="-1">🔥 Ativar agora</a></div>
+
   <p class="note">Opções binárias envolvem alto risco e podem causar perda do capital. O ChinaPro é uma ferramenta de automação e não garante lucro.</p>
 </main>
 
@@ -278,7 +290,9 @@ body.jack main{z-index:60}
   var bg = $("bg"), bx = bg.getContext("2d"), BW, BH, P = [], energy = 0, tint = [127, 232, 255], px = 0, py = 0, tpx = 0, tpy = 0;
   function bsize() { BW = bg.width = innerWidth * dpr; BH = bg.height = innerHeight * dpr; }
   bsize(); addEventListener("resize", bsize);
-  for (var q = 0; q < (mobile ? 55 : 100); q++) P.push({ x: Math.random(), y: Math.random(), z: .3 + Math.random() * .7, vx: (Math.random() - .5) * .0004, vy: (Math.random() - .5) * .0004 });
+  var weak = (navigator.hardwareConcurrency || 4) <= 4 || (navigator.deviceMemory || 8) <= 3;
+  if (mobile) dpr = Math.min(dpr, 1.5);
+  for (var q = 0; q < (weak ? 34 : mobile ? 55 : 100); q++) P.push({ x: Math.random(), y: Math.random(), z: .3 + Math.random() * .7, vx: (Math.random() - .5) * .0004, vy: (Math.random() - .5) * .0004 });
   var bursts = [];
   function burst(col, n) { for (var k = 0; k < (n || 70); k++) { var a = Math.random() * 6.283, s = .004 + Math.random() * .012; bursts.push({ x: .5, y: .45, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, c: col }); } }
   addEventListener("pointermove", function (e) { tpx = (e.clientX / innerWidth - .5); tpy = (e.clientY / innerHeight - .5); }, { passive: true });
@@ -299,7 +313,7 @@ body.jack main{z-index:60}
     }
     for (i = bursts.length - 1; i >= 0; i--) { var b = bursts[i]; b.x += b.vx; b.y += b.vy; b.vy += .00012; b.life -= .014; if (b.life <= 0) { bursts.splice(i, 1); continue; } bx.fillStyle = "rgba(" + b.c + "," + b.life + ")"; bx.beginPath(); bx.arc(b.x * BW, b.y * BH, 2.4 * dpr, 0, 7); bx.fill(); }
     tint = tint.map(function (v, k) { return Math.round(v + ([127, 232, 255][k] - v) * .03); });
-    if (!reduce) requestAnimationFrame(bgdraw);
+    if (!reduce) { if (document.hidden) setTimeout(function () { requestAnimationFrame(bgdraw); }, 400); else requestAnimationFrame(bgdraw); }
   }
   requestAnimationFrame(bgdraw);
 
@@ -372,7 +386,7 @@ body.jack main{z-index:60}
     cfg.stake = Math.max(5, Math.round(cfg.banca * (ag ? .12 : .05)));
     cfg.meta = Math.round(cfg.banca * (ag ? .6 : .3));
     cfg.stop = Math.round(cfg.banca * (ag ? .3 : .15));
-    $("plan").innerHTML = "Entradas de ~<b>R$ " + cfg.stake + "</b> · Meta <b class=\"w\">R$ " + cfg.meta + "</b> · Limite <b class=\"l\">R$ " + cfg.stop + "</b>";
+    $("plan").innerHTML = "Entradas de ~<b>R$&nbsp;" + cfg.stake + "</b> · Meta <b class=\"w\">R$&nbsp;" + cfg.meta + "</b> · Limite <b class=\"l\">R$&nbsp;" + cfg.stop + "</b>";
   }
   document.querySelectorAll(".seg").forEach(function (seg) {
     seg.addEventListener("click", function (e) {
@@ -414,9 +428,30 @@ body.jack main{z-index:60}
 
   // ===== Voz e pensamento do robô =====
   var voiceOn = "speechSynthesis" in window, ptVoice = null;
-  function pickVoice() { try { var vs = speechSynthesis.getVoices(); ptVoice = vs.filter(function (v) { return /pt(-|_)?BR/i.test(v.lang); })[0] || vs.filter(function (v) { return /^pt/i.test(v.lang); })[0] || null; } catch (e) {} }
+  var NOVELTY = /Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley|Albert|Bad News|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Junior|Ralph|Kathy|Fred/i;
+  function score(v) {
+    var n = v.name, br = /pt[-_]?BR/i.test(v.lang), sc = br ? 100 : /^pt/i.test(v.lang) ? 20 : -999;
+    if (NOVELTY.test(n)) sc -= 500;
+    if (/Natural|Neural/i.test(n)) sc += 80;          // Edge / Windows (Francisca, Antonio)
+    if (/Google/i.test(n)) sc += 60;                    // Chrome / Android
+    if (/Premium|Enhanced|Aprimorad|Siri/i.test(n)) sc += 55; // Apple de alta qualidade
+    if (/Francisca|Antonio|Thalita|Luciana|Felipe|Daniel|Maria/i.test(n)) sc += 25;
+    if (!v.localService) sc += 10;
+    return sc;
+  }
+  function pickVoice() { try { var vs = speechSynthesis.getVoices().slice().sort(function (a, b) { return score(b) - score(a); }); ptVoice = vs.length && score(vs[0]) > 0 ? vs[0] : null; } catch (e) {} }
   if (voiceOn) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
-  function say(t) { if (!sound || !voiceOn) return; try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = "pt-BR"; if (ptVoice) u.voice = ptVoice; u.rate = 1.12; u.pitch = .7; u.volume = .9; speechSynthesis.speak(u); } catch (e) {} }
+  function duck(on) { if (drone && ac) try { drone.g.gain.setTargetAtTime(on ? .012 : .035, ac.currentTime, .15); } catch (e) {} }
+  function say(t, urgent) {
+    if (!sound || !voiceOn) return;
+    try {
+      if (urgent) speechSynthesis.cancel(); else if (speechSynthesis.speaking) return;
+      var u = new SpeechSynthesisUtterance(t); u.lang = "pt-BR"; if (ptVoice) u.voice = ptVoice;
+      u.rate = 1.04; u.pitch = 1; u.volume = 1;
+      u.onstart = function () { duck(true); }; u.onend = u.onerror = function () { duck(false); };
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
   function think(html) { var ul = $("think"), li = document.createElement("li"); li.innerHTML = "› " + html; ul.appendChild(li); while (ul.children.length > 5) ul.firstChild.remove(); }
 
   // ===== Gráfico + radar =====
@@ -486,6 +521,7 @@ body.jack main{z-index:60}
     $("go").disabled = true; $("go").textContent = "Testes gratuitos esgotados";
     $("utxt").innerHTML = "Seu robô <b>" + (cfg.modo === "a" ? "Agressivo" : "Conservador") + "</b> com banca de <b>R$ " + cfg.banca + "</b> está pronto. Ative o ChinaPro completo por apenas <b>R$ 19,90</b>, pagamento único.";
     $("unlock").hidden = false; track("TestesEsgotados");
+    if ("IntersectionObserver" in window) { var dk = $("dock"), vis = {}; var dio = new IntersectionObserver(function (es) { es.forEach(function (e) { vis[e.target.id] = e.isIntersecting; }); var show = !vis.unlock && !vis.oferta; dk.classList.toggle("show", show); dk.setAttribute("aria-hidden", !show); }); dio.observe($("unlock")); dio.observe($("oferta")); }
     if (!animate || reduce) { $("charge").hidden = true; $("hotcta").hidden = false; $("unlock").classList.add("live"); return; }
     center($("unlock"));
     var pct = 0, iv = setInterval(function () {
@@ -507,7 +543,7 @@ body.jack main{z-index:60}
     document.body.classList.add("imm", "jack"); hud.classList.add("cockpit"); $("think").innerHTML = ""; setTimeout(size, 60);
     think("núcleo ativado · banca <i>R$ " + cfg.banca + "</i> · modo <i>" + (cfg.modo === "a" ? "agressivo" : "conservador") + "</i>");
     think("meta <b>R$ " + cfg.meta + "</b> · limite <i>R$ " + cfg.stop + "</i> · varrendo 6 ativos…");
-    say("Conexão estabelecida. Você está dentro do robô. Iniciando operação.");
+    say("Conexão estabelecida. Você está dentro do robô. Vou começar a operar agora.", true);
     btn.disabled = true; btn.textContent = "Operando…"; $("feed").innerHTML = ""; $("done").hidden = true;
     hud.classList.add("on"); $("net").textContent = brl(0); $("net").className = ""; $("wn").textContent = 0; $("ls").textContent = 0;
     var PAT = ["MHI", "Três Vizinhos", "Padrão 23", "Melhor de 3", "Confluência"];
@@ -534,14 +570,14 @@ body.jack main{z-index:60}
         if (win && streak >= 2) { var cb = $("combo"); cb.textContent = "COMBO x" + streak; cb.classList.remove("show"); void cb.offsetWidth; cb.classList.add("show"); }
         fx(win);
         think("resultado " + (win ? "<b>WIN " + brl(r) + "</b>" : "<i>LOSS " + brl(r) + "</i> · recalibrando") + " · saldo " + brl(net));
-        if (!win) say("Loss. Recalibrando."); else if (streak === 3) say("Três seguidas."); else if (net >= cfg.meta * .7 && net - r < cfg.meta * .7) say("Meta próxima.");
+        if (!win) say("Essa não entrou. Recalibrando."); else if (streak === 3) say("Três seguidas."); else if (net >= cfg.meta * .7 && net - r < cfg.meta * .7) say("Estamos perto da meta.");
         $("wn").textContent = w; $("ls").textContent = l; i++;
         if (net >= cfg.meta || i > 40) return finish();
         scan(step);
       }, 520);
     }
     function finish() {
-      running = false; energy = 0; droneOff(); think("<b>meta atingida · encerrando operação</b>"); say("Meta atingida. Encerrando operação."); fanfare(); burst("78,227,154", 110); tint = [78, 227, 154];
+      running = false; energy = 0; droneOff(); think("<b>meta atingida · encerrando operação</b>"); say("Meta atingida. Encerrando a operação.", true); fanfare(); burst("78,227,154", 110); tint = [78, 227, 154];
       if (navigator.vibrate) try { navigator.vibrate([50, 40, 50, 40, 120]); } catch (e) {}
       if (!reduce) { var m = document.createElement("div"); m.id = "meta"; m.innerHTML = "<div>META ATINGIDA<small>" + brl(net) + " · o robô parou sozinho</small></div>"; document.body.appendChild(m); setTimeout(function () { m.remove(); }, 1950); }
       hud.classList.remove("on"); $("st").textContent = "META ATINGIDA · ROBÔ PAROU"; $("scan").textContent = "RADAR · 6 ATIVOS";
